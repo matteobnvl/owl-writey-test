@@ -1,7 +1,10 @@
 import request from "supertest";
+import dotenv from "dotenv";
+dotenv.config();
+
 const baseUrl = "https://owl-writey.hemit.fr/api"
-const email = 'pseudo@gmail.com'
-const password = 'Test1234@'
+const email = process.env.EMAIL || '';
+const password = process.env.PASSWORD || '';
 
 async function authenticate(login: string, pwd: string): Promise<string> {
     const url = 'https://www.googleapis.com/';
