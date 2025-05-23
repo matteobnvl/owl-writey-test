@@ -1,0 +1,1 @@
+export type User = 'pseudo' | 'bob' | 'anonymous';
