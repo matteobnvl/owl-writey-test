@@ -148,3 +148,5 @@ export class ExercisesTest extends AbstractTest {
     })
   }
 }
+
+new ExercisesTest().run();
