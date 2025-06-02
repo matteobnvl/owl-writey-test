@@ -10,7 +10,7 @@ export class ExerciceUtils {
     }
 
     async CreateExercise(user: User, data: Object = {}): Promise<void> {
-        const token = this.testUtils.logHas(user)
+        const token = await this.testUtils.logHas(user)
         // TODO: pas finit, faut implémenter tout le utils puis faire les instanciations
 
         const response = await this.testUtils.post("/exercises", {
