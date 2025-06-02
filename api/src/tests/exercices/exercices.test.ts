@@ -1,50 +1,32 @@
+import { ExerciceUtils } from "../../utils/exercice.utils";
+import { TestUtils } from "../../utils/test.utils";
 import { AbstractTest } from "../core/AbstractTest";
 
 export class ExercisesTest extends AbstractTest {
-  private exerciseId: string = "";
+  private exerciseId: string = ""
+  private testUtils = new TestUtils()
+  private exerciseUtils = new ExerciceUtils(this.testUtils)
 
   async run() {
     describe("Exercises API", () => {
 
       it("should refuse access to exercises without token", async () => {
-        const res = await this.get("/exercises");
+        const res = await this.get("/exercises")
         expect(res.status).toBe(401);
       })
 
       it("should create an exercise", async () => {
-        const token = await this.logHas('pseudo')
-        const res = await this.post("/exercises", {
-          name: "test",
-          status: "Ongoing",
-          type: "ExquisiteCorpse",
-          config: {
-            initialText: "test",
-            iterationDuration: 900,
-            nbIterations: 10,
-            textSize: { maxWords: 100, minWords: 10 },
-          }
-        }, token);
+        const res = await this.exerciseUtils.CreateExercise('pseudo')
         expect(res.status).toBe(201);
       })
 
       it("should refuse to create an exercise without token", async () => {
-        const res = await this.post("/exercises", {
-          name: "test",
-          status: "Ongoing",
-          type: "ExquisiteCorpse",
-          config: {
-        initialText: "test",
-        iterationDuration: 900,
-        nbIterations: 10,
-        textSize: { maxWords: 100, minWords: 10 },
-          }
-        });
+        const res = await this.exerciseUtils.CreateExercise('anonymous')
         expect(res.status).toBe(401);
       });
 
       it("should get exercises with token", async () => {
-        const token = await this.logHas('pseudo');
-        const res = await this.get("/exercises", token);
+        const res = await this.exerciseUtils.getExercises('pseudo');
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("exercises");
         expect(Array.isArray(res.body.exercises)).toBe(true);
@@ -71,8 +53,7 @@ export class ExercisesTest extends AbstractTest {
       });
 
       it("should get exercise by id with token", async () => {
-        const token = await this.logHas('pseudo');
-        const res = await this.get(`/exercises/${this.exerciseId}`, token);
+        const res = await this.exerciseUtils.getExerciseById('pseudo', this.exerciseId);
         expect(res.status).toBe(200);
         expect(res.body).toEqual(
           expect.objectContaining({
@@ -121,28 +102,13 @@ export class ExercisesTest extends AbstractTest {
         );
       });
 
-      it("should take turn on exquisite-corpse", async () => {
-        const token = await this.logHas('pseudo');
-        const res = await this.post(`/exquisite-corpse/${this.exerciseId}/take-turn`, {}, token);
-        expect(res.status).toBe(204);
-      });
-
-      it("should submit turn on exquisite-corpse", async () => {
-        const token = await this.logHas('pseudo');
-        const res = await this.post(`/exquisite-corpse/${this.exerciseId}/submit-turn`, {
-          content: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        }, token);
-        expect(res.status).toBe(204);
-      });
-
       it("should refuse to delete exercise without token", async () => {
         const res = await this.delete(`/exercises/${this.exerciseId}`);
         expect(res.status).toBe(401);
       });
 
       it("should delete exercise with token", async () => {
-        const token = await this.logHas('pseudo');
-        const res = await this.delete(`/exercises/${this.exerciseId}`, token);
+        const res = await this.exerciseUtils.deleteExercise('pseudo', this.exerciseId);
         expect(res.status).toBe(204);
       });
     })

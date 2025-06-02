@@ -9,7 +9,7 @@ export class ExerciceUtils {
         this.testUtils = testUtils;
     }
 
-    async CreateExercise(user: User, data: Object = {}): Promise<void> {
+    async CreateExercise(user: User): Promise<any> {
         const token = await this.testUtils.logHas(user)
         // TODO: pas finit, faut implémenter tout le utils puis faire les instanciations
 
@@ -24,19 +24,24 @@ export class ExerciceUtils {
             textSize: { maxWords: 100, minWords: 10 },
           }
         }, token);
-        if (response.status === 201) {
-            const exerciseId = response.body.id; // Adjust based on API response
-            ExerciceUtils.setExerciseId(exerciseId);
-        } else {
-            throw new Error(`Failed to create exercise: ${response.status}`);
-        }
+        return response
     }
 
-    static getExerciseId(): string {
-        return this.exerciseId;
+    async getExercises(user: User): Promise<any> {
+        const token = await this.testUtils.logHas(user);
+        const response = await this.testUtils.get("/exercises", token);
+        return response;
     }
 
-    static setExerciseId(id: string) {
-        this.exerciseId = id;
+    async getExerciseById(user: User, id: string): Promise<any> {
+        const token = await this.testUtils.logHas(user);
+        const response = await this.testUtils.get(`/exercises/${id}`, token);
+        return response;
+    }
+
+    async deleteExercise(user: User, id: string): Promise<any> {
+        const token = await this.testUtils.logHas(user);
+        const response = await this.testUtils.delete(`/exercises/${id}`, token);
+        return response;
     }
 }
