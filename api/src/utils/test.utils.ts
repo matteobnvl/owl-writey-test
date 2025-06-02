@@ -11,12 +11,12 @@ export class TestUtils {
 
     protected userCredentials: Record<User, { email: string, password: string }> = {
         pseudo: {
-            email: process.env.EMAIL_PSEUDO || '',
-            password: process.env.PASSWORD_PSEUDO || '',
+            email: 'pseudo@gmail.com',
+            password: 'Test1234@',
         },
         bob: {
-            email: process.env.BOB_EMAIL || '',
-            password: process.env.BOB_PASSWORD || '',
+            email: 'bob@gmail.com',
+            password: 'Test1234@',
         },
         anonymous: {
             email: '',
