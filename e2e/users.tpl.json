@@ -1,0 +1,11 @@
+{
+  "@usage" : "Fill in this file with the users and the associated passwords",
+  "pseudo": {
+    "login": "<todo>",
+    "password": "<todo>"
+  },
+  "bob": {
+    "login": "<todo>",
+    "password": "<todo>"
+  }
+}
