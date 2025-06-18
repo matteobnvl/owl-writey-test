@@ -17,7 +17,8 @@ export class ExercicePo extends BasePo {
         await this.page.getByRole('textbox', { name: 'Titre' }).fill('Test e2e');
         await this.page.getByRole('spinbutton', { name: 'Nombre de tours' }).fill('10');
         await this.page.getByRole('combobox', { name: "Durée d'un tour" }).click();
-        await this.page.getByRole('option', { name: 'Infini' }).click();
+
+        await this.page.getByRole('option', { name: '1 jour' }).click();
         await this.page.getByRole('spinbutton', { name: 'Minimum de mots' }).fill('10');
         await this.page.getByRole('spinbutton', { name: 'Maximum de mots' }).fill('30');
         await this.page.getByRole('textbox', { name: 'Écrivez le début de votre histoire :' }).fill('Le mec parle trop fort là');
