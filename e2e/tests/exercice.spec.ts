@@ -3,8 +3,13 @@ import { LoginPo } from './pages/login.po';
 import { ExercicePo } from './pages/exercice.po';
 
 test.describe('Exercice Page', () => {
+
     let loginPo: LoginPo
     let exercicePo: ExercicePo
+
+    function waitFor(timeout: number) {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
 
     test.beforeEach(async ({ page }) => {
         loginPo = new LoginPo(page);
@@ -32,8 +37,25 @@ test.describe('Exercice Page', () => {
         await expect(page.locator('owl-exquisite-corpse-details').filter({ hasText: 'il a fini par mourir dans un grand éclat de rire' })).toBeVisible();
 
         await page.getByTitle('Partager').click({ trial: false });
-        const shareLink = await page.getByRole('button', { name: 'Copier' }).getAttribute('href');
-        console.log('Share Link:', shareLink);
+        const input = page.locator('div.share-dialog__link--input input[type="text"]');
+        const link = await input.inputValue();
+        console.log('Shared link:', link);
+
+        await page.getByRole('button', { name: 'Fermer' }).click({ trial: false });
+        await page.locator('.header__username').click({ trial: false });
+        await page.getByRole('menuitem', { name: 'Déconnexion' }).click({ trial: false });
+
+        await page.reload();
+        await loginPo.goTo();
+        await loginPo.logAsUser('bob');
+        
+        // await page.goto(link);
+        // const occurrences = await page.locator('body', { hasText: 'il a fini par mourir dans un grand éclat de rire' }).count();
+        // expect(occurrences).toBeGreaterThan(0);
+
+
+
+
     });
 
     test('delete exercice', async ({ page }) => {
