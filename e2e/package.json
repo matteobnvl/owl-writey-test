@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2e:open": "npx playwright test --ui"
+    "e2e:open": "npx playwright test --ui",
+    "bdd:run": "bddgen && playwright test --ui"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.15.29"
+    "@types/node": "^22.15.29",
+    "playwright-bdd": "^8.2.1"
   }
 }

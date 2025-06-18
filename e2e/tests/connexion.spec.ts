@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { login } from './helpers/login';
 import { LoginPo } from './pages/login.po';
 
 test.describe('Login page', () => {
