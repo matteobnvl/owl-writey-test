@@ -28,4 +28,16 @@ describe("Exercises Participants API", () => {
         const res = await testInstance.post(`/exercises/${testInstance.exerciseId}/participants`, {}, token);
         expect(res.status).toBe(204);
     });
+
+    it("should refuse to add participant without token", async () => {
+        const token = await testInstance.testUtils.logHas('anonymous');
+        const res = await testInstance.post(`/exercises/${testInstance.exerciseId}/participants`, {}, token);
+        expect(res.status).toBe(401);
+    });
+
+    it("should not finish game if participants is not admin", async () => {
+        const token = await testInstance.testUtils.logHas('bob');
+        const res = await testInstance.post(`/exercises/${testInstance.exerciseId}/finish`, {}, token);
+        expect(res.status).toBe(400);
+    });
 });
