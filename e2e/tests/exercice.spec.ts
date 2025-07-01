@@ -52,10 +52,6 @@ test.describe('Exercice Page', () => {
         // await page.goto(link);
         // const occurrences = await page.locator('body', { hasText: 'il a fini par mourir dans un grand éclat de rire' }).count();
         // expect(occurrences).toBeGreaterThan(0);
-
-
-
-
     });
 
     test('delete exercice', async ({ page }) => {

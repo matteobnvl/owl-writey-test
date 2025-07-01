@@ -9,8 +9,8 @@ export class ExercicePo extends BasePo {
         await this.page.goto('/dashboard');
     }
 
-    async elementExercice(): Promise<Locator> {
-        return await this.page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' });
+    async elementExercice(name: string): Promise<Locator> {
+        return await this.page.locator('owl-dashboard-exercise-card').filter({ hasText: name });
     }
 
     async createExercice() {
@@ -25,12 +25,21 @@ export class ExercicePo extends BasePo {
         await this.page.getByRole('button', { name: 'Valider'}).click({ trial: false });
     }
 
-    async handleDeleteButton(): Promise<any> {
-        const elementExercice = await this.elementExercice();
-        await elementExercice.getByRole('link', { name: 'Jouer' }).click({ trial: false });
-        await this.page.getByTitle('Supprimer').click({ trial: false });
-        await this.page.getByRole('button').filter({ hasText: 'Oui' }).click({ trial: false });
+    async handleDeleteButton(name: string = 'Test e2e'): Promise<Locator> {
+    const elementExercice = await this.elementExercice(name);
+    await expect(elementExercice).toBeVisible();
+    await elementExercice
+        .locator('a[href*="/exercises/"] >> mat-icon:text("play_arrow")')
+        .click();
+    await this.page.locator('a:has(mat-icon:text("delete"))').click();
+    await this.page.getByRole('button').filter({ hasText: 'Oui' }).click();
+    return elementExercice;
+    }
 
-        return await elementExercice
+    async handleFinishButton(): Promise<void> {
+        await this.page
+            .locator('a >> mat-icon:text("check_box")')
+            .click();
+        await this.page.getByRole('button').filter({ hasText: 'Oui' }).click();
     }
 }
