@@ -34,6 +34,10 @@ When('I create a new exercice', async ({ page }) => {
 
 When('I delete the exercice named {string}', async ({ page }, name: string) => {
   const exercicePo = new ExercicePo(page);
+  await page.locator('button[routerlink="/exercises/new"]').click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Nouvel exercice' })).toBeVisible();
+  await exercicePo.createExercice();
+  await page.goto('/dashboard');
   await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
   await exercicePo.handleDeleteButton(name);
 });
