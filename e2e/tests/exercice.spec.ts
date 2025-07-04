@@ -7,95 +7,63 @@ test.describe('Exercice Page', () => {
     let loginPo: LoginPo
     let exercicePo: ExercicePo
 
-    function waitFor(timeout: number) {
-        return new Promise(resolve => setTimeout(resolve, timeout));
-    }
-
     test.beforeEach(async ({ page }) => {
         loginPo = new LoginPo(page);
         exercicePo = new ExercicePo(page);
         await loginPo.goTo();
         await loginPo.logAsUser('pseudo');
+        await exercicePo.verifyDashboard();
     })
 
-    test('create exercice', async ({ page }) => {
-        await page.locator('button[routerlink="/exercises/new"]').click({ trial: false });
-        await expect(page.getByRole('heading', { level: 1, name: 'Nouvel exercice' })).toBeVisible();
-        await exercicePo.createExercice();
-        await expect(page.getByRole('heading', { level: 1, name: 'Test e2e' })).toBeVisible();
+    test('create exercice', async () => {
+        await exercicePo.createFullExerciceFlow();
+        await exercicePo.verifyExerciceTitle('Test e2e');
     });
 
     test('play exercice', async ({ page }) => {
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        const element = page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' });
-        element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
-        
-        await page.getByRole('button', { name: ' À mon tour !' }).click({ trial: false });
-        await page.locator('.NgxEditor__Content').fill('il a fini par mourir dans un grand éclat de rire');
-        await page.getByRole('button', { name: 'Soumettre' }).click({ trial: false });
-
-        await expect(page.locator('owl-exquisite-corpse-details').filter({ hasText: 'il a fini par mourir dans un grand éclat de rire' })).toBeVisible();
+        await exercicePo.createFullExerciceFlow('Play e2e');
+        await exercicePo.verifyExerciceTitle('Play e2e');
+        await page.goto('/dashboard');
+        await exercicePo.playExercice('Play e2e');
+        await exercicePo.participateInExercice('il a fini par mourir dans un grand éclat de rire');
+        await exercicePo.verifyParticipationText('il a fini par mourir dans un grand éclat de rire');
     });
 
-    test('share exercice', async ({ page }) => {
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        const element = page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' });
-        element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
-        
-        await page.locator('a:has(mat-icon:text("link"))').click({ trial: false });
-        const input = page.locator('div.share-dialog__link--input input[type="text"]');
-        const link = await input.inputValue();
-        expect(link).toContain('https://owl-writey.hemit.fr/exercises/');
+    test('share exercice and play', async ({ page }) => {
+        await exercicePo.createFullExerciceFlow('Share e2e');
+        await exercicePo.verifyExerciceTitle('Share e2e');
+        const link = await exercicePo.shareExercice();
+        await exercicePo.verifyShareLink(link);
 
-        await page.getByRole('button', { name: 'Fermer' }).click({ trial: false });
-        await page.locator('.header__username').click({ trial: false });
-        await page.getByRole('menuitem', { name: 'Déconnexion' }).click({ trial: false });
+        await exercicePo.closeButton.click({ trial: false });
+        await exercicePo.logout();
 
         await page.reload();
         await loginPo.goTo();
         await loginPo.logAsUser('bob');
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        page.goto(link);
+        await exercicePo.verifyDashboard();
+        await page.goto(link);
 
-        await expect(page.getByRole('heading', { level: 1, name: 'Test e2e' })).toBeVisible();
-    });
-
-    test('play exercice with participant', async ({ page }) => {
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        await page.locator('.header__username').click({ trial: false });
-        await page.getByRole('menuitem', { name: 'Déconnexion' }).click({ trial: false });
-
-        await page.reload();
-        await loginPo.goTo();
-        await loginPo.logAsUser('bob');
-
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        const element = page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' });
-        element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
-        
-        await page.getByRole('button', { name: ' À mon tour !' }).click({ trial: false });
-        await page.locator('.NgxEditor__Content').fill('je suis bob et je joue avec le test e2e');
-        await page.getByRole('button', { name: 'Soumettre' }).click({ trial: false });
-
-        await expect(page.locator('owl-exquisite-corpse-details').filter({ hasText: 'je suis bob et je joue avec le test e2e' })).toBeVisible();
+        await exercicePo.verifyExerciceTitle('Share e2e');
+        await exercicePo.participateInExercice('je suis bob et je joue avec le test e2e');
+        await exercicePo.verifyParticipationText('je suis bob et je joue avec le test e2e');
     });
 
     test('finish exercice', async ({ page }) => {
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        let element = page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' });
-        element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
+        await exercicePo.createFullExerciceFlow('Finish e2e');
+        await exercicePo.verifyExerciceTitle('Finish e2e');
+        await page.goto('/dashboard');
+        await exercicePo.verifyDashboard();
+        await exercicePo.playExercice('Finish e2e');
         await exercicePo.handleFinishButton();
-        await expect(page.locator('owl-dashboard-exercise-card').filter({ hasText: 'Test e2e' })).not.toBeVisible();
+        await exercicePo.verifyExerciceNotVisible('Finish e2e');
     });
 
     test('delete exercice', async ({ page }) => {
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
-        await page.locator('button[routerlink="/exercises/new"]').click({ trial: false });
-        await expect(page.getByRole('heading', { level: 1, name: 'Nouvel exercice' })).toBeVisible();
-        await exercicePo.createExercice();
+        await exercicePo.createFullExerciceFlow('Delete e2e');
         await page.goto('/dashboard');
-        const element = await exercicePo.handleDeleteButton();
-        await expect(page.getByRole('heading', { level: 1, name: 'Mes Romans' })).toBeVisible();
+        const element = await exercicePo.handleDeleteButton('Delete e2e');
+        await exercicePo.verifyDashboard();
         await expect(element).not.toBeVisible();
     });
 })
