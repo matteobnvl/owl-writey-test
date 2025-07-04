@@ -17,14 +17,18 @@ Then('I should see the text {string}', async ({ page }, text: string) => {
 // Authentication steps
 Given('I am logged in as {string}', async ({ page }, username: string) => {
   const loginPo = new LoginPo(page);
+  const exercicePo = new ExercicePo(page);
   await loginPo.goTo();
   await loginPo.logAsUser(username as 'pseudo' | 'bob');
+  await exercicePo.verifyDashboard();
 });
 
 When('I log in as {string}', async ({ page }, username: string) => {
   const loginPo = new LoginPo(page);
+  const exercicePo = new ExercicePo(page);
   await loginPo.goTo();
   await loginPo.logAsUser(username as 'pseudo' | 'bob');
+  await exercicePo.verifyDashboard();
 });
 
 When('I log out', async ({ page }) => {

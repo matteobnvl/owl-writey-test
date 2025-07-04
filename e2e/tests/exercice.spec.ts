@@ -12,6 +12,7 @@ test.describe('Exercice Page', () => {
         exercicePo = new ExercicePo(page);
         await loginPo.goTo();
         await loginPo.logAsUser('pseudo');
+        await exercicePo.verifyDashboard();
     })
 
     test('create exercice', async () => {
@@ -19,15 +20,18 @@ test.describe('Exercice Page', () => {
         await exercicePo.verifyExerciceTitle('Test e2e');
     });
 
-    test('play exercice', async () => {
-        await exercicePo.verifyDashboard();
-        await exercicePo.playExercice();
+    test('play exercice', async ({ page }) => {
+        await exercicePo.createFullExerciceFlow('Play e2e');
+        await exercicePo.verifyExerciceTitle('Play e2e');
+        await page.goto('/dashboard');
+        await exercicePo.playExercice('Play e2e');
         await exercicePo.participateInExercice('il a fini par mourir dans un grand éclat de rire');
         await exercicePo.verifyParticipationText('il a fini par mourir dans un grand éclat de rire');
     });
 
-    test('share exercice', async ({ page }) => {
-        await exercicePo.verifyDashboard();
+    test('share exercice and play', async ({ page }) => {
+        await exercicePo.createFullExerciceFlow('Share e2e');
+        await exercicePo.verifyExerciceTitle('Share e2e');
         const link = await exercicePo.shareExercice();
         await exercicePo.verifyShareLink(link);
 
@@ -40,35 +44,25 @@ test.describe('Exercice Page', () => {
         await exercicePo.verifyDashboard();
         await page.goto(link);
 
-        await exercicePo.verifyExerciceTitle('Test e2e');
-    });
-
-    test('play exercice with participant', async ({ page }) => {
-        await exercicePo.verifyDashboard();
-        await exercicePo.logout();
-
-        await page.reload();
-        await loginPo.goTo();
-        await loginPo.logAsUser('bob');
-
-        await exercicePo.verifyDashboard();
-        await exercicePo.playExercice();
+        await exercicePo.verifyExerciceTitle('Share e2e');
         await exercicePo.participateInExercice('je suis bob et je joue avec le test e2e');
         await exercicePo.verifyParticipationText('je suis bob et je joue avec le test e2e');
     });
 
-    test('finish exercice', async () => {
+    test('finish exercice', async ({ page }) => {
+        await exercicePo.createFullExerciceFlow('Finish e2e');
+        await exercicePo.verifyExerciceTitle('Finish e2e');
+        await page.goto('/dashboard');
         await exercicePo.verifyDashboard();
-        await exercicePo.playExercice();
+        await exercicePo.playExercice('Finish e2e');
         await exercicePo.handleFinishButton();
-        await exercicePo.verifyExerciceNotVisible('Test e2e');
+        await exercicePo.verifyExerciceNotVisible('Finish e2e');
     });
 
     test('delete exercice', async ({ page }) => {
-        await exercicePo.verifyDashboard();
-        await exercicePo.createFullExerciceFlow();
+        await exercicePo.createFullExerciceFlow('Delete e2e');
         await page.goto('/dashboard');
-        const element = await exercicePo.handleDeleteButton();
+        const element = await exercicePo.handleDeleteButton('Delete e2e');
         await exercicePo.verifyDashboard();
         await expect(element).not.toBeVisible();
     });

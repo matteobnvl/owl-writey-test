@@ -29,7 +29,7 @@ Then('I should see the exercice titled {string}', async ({ page }, title: string
 
 When('I delete the exercice named {string}', async ({ page }, name: string) => {
   const exercicePo = new ExercicePo(page);
-  await exercicePo.createFullExerciceFlow();
+  await exercicePo.createFullExerciceFlow(name);
   await exercicePo.goTo();
   await exercicePo.handleDeleteButton(name);
 });
@@ -48,7 +48,6 @@ When('I play the exercice named {string}', async ({ page }, name: string) => {
 
 When('I play the exercice named {string} with content {string}', async ({ page }, name: string, content: string) => {
   const exercicePo = new ExercicePo(page);
-  await exercicePo.playExercice(name);
   await exercicePo.participateInExercice(content);
 });
 
@@ -59,9 +58,9 @@ Then('I should see the text {string} in the details', async ({ page }, content: 
 
 // --- Exercise Sharing ---
 
-When('I share the exercice {string}', async ({ page }, name: string) => {
+When('I share the exercice {string}', async ({ page }) => {
   const exercicePo = new ExercicePo(page);
-  sharedLink = await exercicePo.shareExercice(name);
+  sharedLink = await exercicePo.shareExercice();
 });
 
 Then('I should see a share link', async ({ page }) => {

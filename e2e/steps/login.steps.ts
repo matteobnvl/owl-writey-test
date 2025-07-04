@@ -1,8 +1,8 @@
 import { createBdd } from 'playwright-bdd';
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { LoginPo } from '../tests/pages/login.po';
 
-const { Given, When, Then } = createBdd<{ page: Page }>();
+const { Given, When } = createBdd<{ page: Page }>();
 
 Given('I am on the login page', async ({ page }) => {
   await new LoginPo(page).goTo();

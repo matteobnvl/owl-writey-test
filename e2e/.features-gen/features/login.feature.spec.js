@@ -13,11 +13,6 @@ test.describe('Login page', () => {
 
 // == technical section ==
 
-test.beforeAll('BeforeAll Hooks', ({ $runBeforeAllHooks }) => $runBeforeAllHooks(test, {  }, bddFileData));
-test.afterAll('AfterAll Hooks', ({ $registerAfterAllHooks }) => $registerAfterAllHooks(test, {  }, bddFileData));
-test.beforeEach('BeforeEach Hooks', ({ $beforeEach }) => {});
-test.afterEach('AfterEach Hooks', ({ $afterEach }) => {});
-
 test.use({
   $test: ({}, use) => use(test),
   $uri: ({}, use) => use('features\\login.feature'),

@@ -15,7 +15,7 @@ export class ExercicePo extends BasePo {
     }
 
     async elementExercice(name: string): Promise<Locator> {
-        return await this.page.locator('owl-dashboard-exercise-card').filter({ hasText: name });
+        return await this.page.locator('owl-dashboard-exercise-card').filter({ hasText: name }).first();
     }
 
     get dashboardHeading(): Locator {
@@ -53,20 +53,18 @@ export class ExercicePo extends BasePo {
         await this.page.getByRole('button', { name: 'Valider'}).click({ trial: false });
     }
 
-    async createFullExerciceFlow(): Promise<void> {
+    async createFullExerciceFlow(title: string = 'Test e2e'): Promise<void> {
         await this.goToNewExercice();
         await expect(this.newExerciceHeading).toBeVisible();
-        await this.createExercice();
+        await this.createExercice(title);
     }
 
     async playExercice(exerciceName: string = 'Test e2e'): Promise<void> {
-        const element = this.page.locator('owl-dashboard-exercise-card').filter({ hasText: exerciceName });
+        const element = this.page.locator('owl-dashboard-exercise-card').filter({ hasText: exerciceName }).first();
         await element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
     }
 
-    async shareExercice(exerciceName: string = 'Test e2e'): Promise<string> {
-        const element = this.page.locator('owl-dashboard-exercise-card').filter({ hasText: exerciceName });
-        await element.locator('a:has(mat-icon:text("play_arrow"))').click({ trial: false });
+    async shareExercice(): Promise<string> {
         await this.page.locator('a:has(mat-icon:text("link"))').click({ trial: false });
         const link = await this.shareDialog.inputValue();
         return link;
