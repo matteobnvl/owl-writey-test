@@ -7,10 +7,6 @@ test.describe('Exercice Page', () => {
     let loginPo: LoginPo
     let exercicePo: ExercicePo
 
-    // function waitFor(timeout: number) {
-    //     return new Promise(resolve => setTimeout(resolve, timeout));
-    // }
-
     test.beforeEach(async ({ page }) => {
         loginPo = new LoginPo(page);
         exercicePo = new ExercicePo(page);
@@ -18,12 +14,12 @@ test.describe('Exercice Page', () => {
         await loginPo.logAsUser('pseudo');
     })
 
-    test('create exercice', async ({ page }) => {
+    test('create exercice', async () => {
         await exercicePo.createFullExerciceFlow();
         await exercicePo.verifyExerciceTitle('Test e2e');
     });
 
-    test('play exercice', async ({ page }) => {
+    test('play exercice', async () => {
         await exercicePo.verifyDashboard();
         await exercicePo.playExercice();
         await exercicePo.participateInExercice('il a fini par mourir dans un grand éclat de rire');
@@ -61,7 +57,7 @@ test.describe('Exercice Page', () => {
         await exercicePo.verifyParticipationText('je suis bob et je joue avec le test e2e');
     });
 
-    test('finish exercice', async ({ page }) => {
+    test('finish exercice', async () => {
         await exercicePo.verifyDashboard();
         await exercicePo.playExercice();
         await exercicePo.handleFinishButton();

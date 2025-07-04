@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { defineBddConfig } from 'playwright-bdd';
 
-const useBdd = false; // process.env['PLAYWRIGHT_USE_BDD'] === '1';
+const useBdd = true; // process.env['PLAYWRIGHT_USE_BDD'] === '1';
 
 const specs = useBdd
   ? defineBddConfig({
