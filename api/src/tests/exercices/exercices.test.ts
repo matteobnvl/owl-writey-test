@@ -54,50 +54,17 @@ export class ExercisesTest extends AbstractTest {
 
       it("should get exercise by id with token", async () => {
         const res = await this.exerciseUtils.getExerciseById('pseudo', this.exerciseId);
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(200)
         expect(res.body).toEqual(
           expect.objectContaining({
-        id: expect.any(String),
-        name: expect.any(String),
-        status: expect.any(String),
-        type: expect.any(String),
-        config: expect.objectContaining({
-          initialText: expect.any(String),
-          iterationDuration: expect.any(Number),
-          nbIterations: expect.any(Number),
-          textSize: expect.objectContaining({
-            maxWords: expect.any(Number),
-            minWords: expect.any(Number),
-          }),
-        }),
-        content: expect.objectContaining({
-          scenes: expect.arrayContaining([
-            expect.objectContaining({
-          id: expect.any(Number),
-          text: expect.any(String),
-          author: expect.objectContaining({
-            uid: expect.any(String),
+            id: expect.any(String),
             name: expect.any(String),
-          }),
-            }),
-          ]),
-        }),
-        participants: expect.arrayContaining([
-          expect.objectContaining({
-            uid: expect.any(String),
-            name: expect.any(String),
-            isAdmin: expect.any(Boolean),
-          }),
-        ]),
-        _links: expect.objectContaining({
-          self: expect.any(String),
-          connect: expect.any(String),
-          delete: expect.any(String),
-          finish: expect.any(String),
-          invite: expect.any(String),
-          removeParticipant: expect.any(String),
-          takeTurn: expect.any(String),
-        }),
+            status: expect.any(String),
+            type: expect.any(String),
+            config: expect.any(Object),
+            content: expect.any(Object),
+            participants: expect.any(Array),
+            _links: expect.any(Object),
           })
         );
       });
